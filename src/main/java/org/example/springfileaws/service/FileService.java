@@ -56,9 +56,11 @@ public class FileService {
         return "File deleted successfully: " + fileName;
     }
     // Download a file from S3
-    public Path downloadFile(String fileName) throws IOException {
+ public Path downloadFile(String fileName) throws IOException {
         S3Object s3Object = s3Client.getObject(bucketName, fileName);
-        Path tempFile = Files.createTempFile(fileName, null);
+        // Ensure the suffix is valid; using ".tmp" as a common temporary file extension
+        String suffix = ".tmp";
+        Path tempFile = Files.createTempFile("download_", suffix);
         try (InputStream inputStream = s3Object.getObjectContent()) {
             Files.copy(inputStream, tempFile, StandardCopyOption.REPLACE_EXISTING);
         }
